@@ -1,18 +1,36 @@
 const url = "https://pokeapi.co/api/v2/";
+let searchResults = [];
+let types = ["normal","fighting","flying","poison","ground","rock","bug","ghost","steel",
+    "fire","water","grass","electric","psychic","ice","dragon","dark","fairy"];
 
 function updateList (gen, type) {
+    let typeNumber = types.indexOf(type) + 1;
+    fetch(url + `type/${typeNumber}`)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (json) {
+            let typePokemon = json.pokemon;
+        
+            typePokemon.forEach((pokemon) => {
+                let pokemonName = pokemon.pokemon.name;
+                searchResults.push(pokemonName);
+            })
+        })
     fetch(url + `generation/${gen}`)
         .then(function (response) {
             return response.json();
         })
         .then(function (json) {
             let genPokemon = json.pokemon_species;
-            const pokemonList = document.getElementById("pokemon-list");
+            let pokemonList = document.getElementById("pokemon-list");
 
             genPokemon.forEach((pokemon) => {
-                let listItem = document.createElement("li");
-                listItem.innerText = pokemon.name;
-                pokemonList.appendChild(listItem);
+                if (searchResults.includes(pokemon.name)) {
+                    let listItem = document.createElement("li");
+                    listItem.innerText = pokemon.name;
+                    pokemonList.appendChild(listItem);
+                }
             })
         })
 }
@@ -23,6 +41,7 @@ function getPokemon () {
     let parentDiv = document.getElementById("pokemon-list");
 
     parentDiv.innerHTML = "";
+    searchResults = [];
 
     updateList(generation, type);
 }
