@@ -1,7 +1,14 @@
 const url = "https://pokeapi.co/api/v2/";
+const spriteUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"
 let searchResults = [];
 let types = ["normal","fighting","flying","poison","ground","rock","bug","ghost","steel",
     "fire","water","grass","electric","psychic","ice","dragon","dark","fairy"];
+
+function getSprite (pokemonUrl) {
+    let urlArray = pokemonUrl.split("/");
+    let pokemonNumber = urlArray[urlArray.length - 2];
+    return `${spriteUrl}${pokemonNumber}.png`;
+}
 
 function updateList (gen, type) {
     let typeNumber = types.indexOf(type) + 1;
@@ -30,6 +37,9 @@ function updateList (gen, type) {
                     let listItem = document.createElement("li");
                     listItem.innerText = pokemon.name;
                     pokemonList.appendChild(listItem);
+                    let spriteItem = document.createElement("img");
+                    spriteItem.src = getSprite(pokemon.url);
+                    listItem.appendChild(spriteItem);
                 }
             })
         })
